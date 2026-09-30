@@ -1,0 +1,946 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Кабинет восприятия — как устроен разум</title>
+<meta name="description" content="Интерактивный 3D-атлас «Как устроен разум: восприятие, эмоции, ошибки мышления». Комната Эймса, живые иллюзии, когнитивные искажения, кризис воспроизводимости. Научно-популярный проект.">
+<meta name="theme-color" content="#0d0d0d">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='15' fill='%23fff'/%3E%3Ccircle cx='16' cy='16' r='11' fill='%23000'/%3E%3Ccircle cx='16' cy='16' r='7' fill='%23fff'/%3E%3Ccircle cx='16' cy='16' r='3' fill='%230047AB'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;700&family=Unbounded:wght@500;700;900&display=swap">
+<link rel="stylesheet" href="style.css">
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+  }
+}
+</script>
+<script type="module" src="main.js"></script>
+</head>
+<body class="mode-illusion" data-accent="cobalt">
+<a class="skip" href="#ch-entry">Перейти к тексту</a>
+
+<canvas id="stage" aria-hidden="true"></canvas>
+<div id="stage-fallback" aria-hidden="true"></div>
+<div id="labels" aria-hidden="true"></div>
+
+<header class="topbar">
+  <a class="brand" href="#top" aria-label="Кабинет восприятия — в начало">
+    <svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="14" /><circle cx="16" cy="16" r="9" /><circle cx="16" cy="16" r="4" class="acc" /></svg>
+    <span>Кабинет восприятия</span>
+  </a>
+  <div class="mode" role="group" aria-label="Режим показа сцены">
+    <button type="button" class="mode__btn" data-mode="illusion" aria-pressed="true">иллюзия</button>
+    <button type="button" class="mode__btn" data-mode="schema" aria-pressed="false">схема</button>
+  </div>
+  <button type="button" class="navbtn" aria-expanded="false" aria-controls="nav">Оглавление</button>
+</header>
+
+<nav id="nav" class="nav" hidden aria-label="Оглавление">
+  <div class="nav__inner">
+    <p class="nav__h">Главы</p>
+    <ol class="nav__list" id="nav-chapters"></ol>
+    <p class="nav__h">Залы кабинета</p>
+    <ol class="nav__list nav__list--alpha" id="nav-halls"></ol>
+  </div>
+</nav>
+
+<div class="rings" aria-hidden="true">
+  <svg viewBox="0 0 100 100" id="rings-svg"></svg>
+  <span class="rings__label" id="rings-label">Вход</span>
+</div>
+
+<div class="hud" aria-live="off">
+  <span class="hud__k">совпадение с глазком</span>
+  <span class="hud__v" id="hud-match">100%</span>
+</div>
+
+<main>
+
+<!-- ============ ОБЛОЖКА ============ -->
+<section class="hero" id="top" data-cam="hero" data-accent="cobalt" data-title="Обложка">
+  <div class="plaque plaque--hero">
+    <p class="kicker">Интерактивный атлас · научно-популярный проект</p>
+    <h1 class="warp title">Кабинет восприятия</h1>
+    <p class="subtitle">Как устроен разум: восприятие, эмоции, ошибки мышления</p>
+    <p class="lead">Перед вами комната Эймса. В ней стоят две <strong>одинаковые</strong> фигуры — но одна кажется великаном, другая карликом. Пока камера стоит в&nbsp;«глазке», мозг уверен, что комната прямоугольная. Сдвиньтесь — и&nbsp;иллюзия развалится.</p>
+    <p class="hint"><span class="hint__dot"></span>Прокручивайте вниз: камера поведёт по кабинету. Переключатель «иллюзия / схема» наверху показывает настоящую геометрию. Линза под курсором (или под пальцем) снимает оптическое искажение.</p>
+  </div>
+</section>
+
+<!-- ============ 01 ВХОД ============ -->
+<section class="chapter" id="ch-entry" data-cam="entry" data-accent="cobalt" data-title="Вход" data-num="01">
+  <div class="plaque">
+    <p class="kicker">Глава 01 · Вход</p>
+    <h2 class="warp">Мозг получает обрывки</h2>
+    <p class="lead">Восприятие — это построение, а не запись. В мозг поступают разрозненные сигналы, и он достраивает из них правдоподобный мир.</p>
+    <p>Чёткое зрение даёт только центральная ямка сетчатки — примерно два градуса поля зрения, размер ногтя большого пальца на вытянутой руке. Остальное размыто. Глаза несколько раз в секунду совершают быстрые скачки — саккады, и во время скачка восприятие частично подавляется. При этом мы видим цельную, резкую и неподвижную картину: её собирает мозг.</p>
+    <p>Ещё в&nbsp;XIX веке Герман фон Гельмгольц назвал это «бессознательным умозаключением»: мозг делает ставку на самое вероятное объяснение сигналов [1]. Современные теории предиктивной обработки развивают эту идею: мозг постоянно предсказывает входящие сигналы и&nbsp;сверяет прогноз с ошибкой [2]. Как общая теория работы мозга предиктивная обработка остаётся предметом споров, но сама идея «восприятие = вывод» хорошо подтверждена.</p>
+    <p>Комната Эймса (Адельберт Эймс-младший, 1940-е) — наглядный пример [3]. Её задняя стена стоит наискось, пол наклонён, окна и клетки нарисованы трапециями. Из одной точки всё это проецируется на сетчатку точно так же, как обычная прямоугольная комната. Мозг выбирает привычное — «комнаты прямоугольные» — и расплачивается размерами людей.</p>
+    <aside class="fact" data-v="ok">
+      <div class="fact__blot" data-seed="11"></div>
+      <div class="fact__body">
+        <p class="fact__v"></p>
+        <p>Одинаковое изображение на сетчатке может породить бесконечно много трёхмерных сцен. Мозг выбирает одну — опираясь на опыт и ожидания. Поэтому иллюзии не «сбои», а побочный эффект обычно удачных догадок.</p>
+        <p class="fact__src">Источники: [1], [2], [3]</p>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<!-- ============ 02 ВОСПРИЯТИЕ ============ -->
+<section class="chapter" id="ch-perception" data-cam="perception" data-accent="red" data-title="Восприятие" data-num="02">
+  <div class="plaque plaque--wide">
+    <p class="kicker">Глава 02 · Восприятие</p>
+    <h2 class="warp">Пробелы заполняются сами</h2>
+    <p class="lead">В каждом глазу есть слепое пятно — место, где зрительный нерв выходит из сетчатки и где нет фоторецепторов. Вы его не замечаете: мозг закрашивает дыру окружающим узором [9].</p>
+
+    <figure class="demo" id="demo-blindspot">
+      <figcaption class="demo__cap"><strong>Найдите своё слепое пятно.</strong> Закройте левый глаз, правым смотрите на крестик. Медленно приближайтесь к экрану или отдаляйтесь (на телефоне — примерно на 20–30 см). В какой-то момент чёрный круг исчезнет, а полосы сомкнутся.</figcaption>
+      <svg viewBox="0 0 600 140" class="blindspot" role="img" aria-label="Крестик слева, чёрный круг справа на полосатом фоне">
+        <defs><pattern id="bs-stripes" width="12" height="12" patternUnits="userSpaceOnUse"><rect width="12" height="6" fill="#0d0d0d"/></pattern></defs>
+        <rect x="0" y="0" width="600" height="140" fill="#fff"/>
+        <rect x="360" y="10" width="220" height="120" fill="url(#bs-stripes)"/>
+        <path d="M60 70h40M80 50v40" stroke="#0d0d0d" stroke-width="6"/>
+        <circle cx="470" cy="70" r="20" class="bs-dot"/>
+      </svg>
+    </figure>
+
+    <h3>Мюллер-Лайер: подгоните длину</h3>
+    <p>Две линии со «стрелками» на концах. Двигайте ползунок, пока нижняя линия не покажется равной верхней, и нажмите «Проверить». Второй ползунок меняет угол «стрелок» — посмотрите, как ломается суждение о длине [5].</p>
+    <figure class="demo" id="demo-ml">
+      <svg viewBox="0 0 600 260" class="ml" role="img" aria-label="Иллюзия Мюллер-Лайера: две горизонтальные линии с разными окончаниями">
+        <g class="ml__guides"></g>
+        <g class="ml__top"></g>
+        <g class="ml__bot"></g>
+      </svg>
+      <div class="controls">
+        <label class="ctl"><span>Длина нижней линии</span><input type="range" min="140" max="420" value="230" id="ml-len"></label>
+        <label class="ctl"><span>Угол «стрелок»</span><input type="range" min="0" max="100" value="100" id="ml-ang"></label>
+        <button type="button" class="btn" id="ml-check">Проверить</button>
+      </div>
+      <p class="demo__out" id="ml-out" aria-live="polite"></p>
+    </figure>
+
+    <h3>Шахматная доска Адельсона</h3>
+    <p>Клетки A и B покрашены <em>одинаковым</em> серым. Не верится? Ползунок убирает контекст — тень, соседние клетки, цилиндр [4]. Мозг не измеряет яркость: он оценивает цвет поверхности с поправкой на освещение, и эта поправка здесь срабатывает против нас.</p>
+    <figure class="demo" id="demo-adelson">
+      <canvas width="600" height="440" class="adelson" role="img" aria-label="Шахматная доска с тенью от цилиндра; клетки A и B одного цвета"></canvas>
+      <div class="controls">
+        <label class="ctl ctl--wide"><span>Убрать контекст</span><input type="range" min="0" max="100" value="0" id="ad-ctx"></label>
+        <button type="button" class="btn btn--ghost" id="ad-bridge" aria-pressed="false">Соединить A и B полосой</button>
+      </div>
+    </figure>
+
+    <h3>«Платье»: одинаковые пиксели — разный свет</h3>
+    <p>В 2015 году фотография платья расколола интернет: одни видели бело-золотое, другие — сине-чёрное. Сам снимок мы не показываем (у него есть правообладатель), но механизм можно воспроизвести. Полосы «ткани» ниже не меняются вовсе — меняется только подсказка об освещении вокруг. Предположение «платье в тёплом свете» и «платье в синеватой тени» ведёт к разному цвету [7, 8].</p>
+    <figure class="demo" id="demo-dress">
+      <canvas width="600" height="360" class="dress" role="img" aria-label="Полосатый образец ткани на фоне, освещение которого меняется ползунком"></canvas>
+      <div class="controls">
+        <label class="ctl ctl--wide"><span>Освещение сцены: синеватая тень ↔ тёплая лампа</span><input type="range" min="0" max="100" value="50" id="dress-light"></label>
+      </div>
+      <p class="demo__out" id="dress-out">Пипетка по полосам: <span class="swatch" id="dress-s1"></span> <code id="dress-h1"></code> и <span class="swatch" id="dress-s2"></span> <code id="dress-h2"></code> — при любом положении ползунка.</p>
+    </figure>
+
+    <aside class="fact" data-v="ok">
+      <div class="fact__blot" data-seed="21"></div>
+      <div class="fact__body">
+        <p class="fact__v"></p>
+        <p>Слепое пятно занимает примерно 5–7 градусов поля зрения и расположено около 15 градусов от центра в сторону виска. Его «заполнение» — активный процесс в зрительной коре, а не просто отсутствие сигнала.</p>
+        <p class="fact__src">Источники: [9]</p>
+      </div>
+    </aside>
+    <aside class="fact" data-v="disputed">
+      <div class="fact__blot" data-seed="22"></div>
+      <div class="fact__body">
+        <p class="fact__v"></p>
+        <p>Почему работает Мюллер-Лайер, до конца не ясно. Популярная гипотеза «прямоугольного мира» (мы привыкли к углам зданий) опиралась на кросс-культурные различия в силе иллюзии, но эти данные трактуются по-разному. Что люди из разных культур поддаются иллюзии неодинаково — наблюдалось; почему — спорно.</p>
+        <p class="fact__src">Источники: [5], [6]</p>
+      </div>
+    </aside>
+    <aside class="fact" data-v="disputed">
+      <div class="fact__blot" data-seed="23"></div>
+      <div class="fact__body">
+        <p class="fact__v"></p>
+        <p>С «платьем» хорошо подтверждено главное: люди расходятся в предположении об освещении. Гипотеза, что «совы» чаще видят сине-чёрное, а «жаворонки» — бело-золотое (из-за привычного света), основана на корреляциях из онлайн-опроса и остаётся спорной.</p>
+        <p class="fact__src">Источники: [7], [8]</p>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<!-- ============ 03 ВНИМАНИЕ ============ -->
+<section class="chapter" id="ch-attention" data-cam="attention" data-accent="lemon" data-title="Внимание" data-num="03">
+  <div class="plaque plaque--wide plaque--right">
+    <p class="kicker">Глава 03 · Внимание</p>
+    <h2 class="warp">Видим то, что ищем</h2>
+    <p class="lead">Внимание — не прожектор, который освещает всё подряд, а фильтр. Когда мы заняты задачей, неожиданные вещи прямо перед глазами могут пройти мимо сознания. Это называется слепотой невнимания [11].</p>
+    <p>В знаменитом эксперименте Дэниела Саймонса и Кристофера Шабри зрители считали пасы баскетболистов в белых футболках. Посреди видео через площадку проходил человек в костюме гориллы, останавливался и бил себя в грудь. Примерно половина участников его не заметила [10]. Похожий эффект показан с простыми фигурами [12] и даже у экспертов: в одном исследовании 20 из 24 рентгенологов не увидели крошечную гориллу, вставленную в снимок лёгких, хотя их взгляд проходил прямо через неё [13].</p>
+
+    <figure class="demo" id="demo-gorilla">
+      <figcaption class="demo__cap"><strong>Попробуйте сами.</strong> Считайте, сколько раз <strong>белые</strong> круги коснутся рамки. Чёрные не считайте. Тест длится 20 секунд.</figcaption>
+      <div class="gorilla">
+        <canvas width="600" height="340" class="gorilla__cv" aria-label="Поле с движущимися белыми и чёрными кругами"></canvas>
+        <div class="gorilla__overlay" id="gor-overlay">
+          <button type="button" class="btn btn--big" id="gor-start">Начать тест</button>
+        </div>
+      </div>
+      <form class="quiz" id="gor-form" hidden>
+        <label class="ctl"><span>Сколько касаний насчитали?</span><input type="number" inputmode="numeric" min="0" max="99" id="gor-count" required></label>
+        <fieldset class="choices">
+          <legend>Заметили ли вы что-нибудь необычное?</legend>
+          <label><input type="radio" name="gor-saw" value="yes"> Да</label>
+          <label><input type="radio" name="gor-saw" value="no" checked> Нет, только круги</label>
+        </fieldset>
+        <button type="submit" class="btn">Ответить</button>
+      </form>
+      <div class="demo__out" id="gor-out" aria-live="polite"></div>
+    </figure>
+
+    <aside class="fact" data-v="ok">
+      <div class="fact__blot" data-seed="31"></div>
+      <div class="fact__body">
+        <p class="fact__v"></p>
+        <p>Слепота невнимания устойчиво воспроизводится. Но предсказать, кто именно не заметит неожиданное, почти невозможно: связь с интеллектом или «внимательностью» как чертой слабая. Это цена сосредоточенности, а не признак рассеянности.</p>
+        <p class="fact__src">Источники: [10], [11], [12], [13]</p>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<!-- ============ 04 ПАМЯТЬ ============ -->
+<section class="chapter" id="ch-memory" data-cam="memory" data-accent="cobalt" data-title="Память" data-num="04">
+  <div class="plaque plaque--wide">
+    <p class="kicker">Глава 04 · Память</p>
+    <h2 class="warp">Память пересобирает</h2>
+    <p class="lead">Воспоминание — не видеозапись, которую мы проигрываем. Каждый раз мозг собирает его заново из фрагментов, общих знаний и того, что мы узнали позже. Ещё в 1932 году Фредерик Бартлетт показал, как пересказанная история постепенно подгоняется под привычные схемы [14].</p>
+
+    <figure class="demo" id="demo-drm">
+      <figcaption class="demo__cap"><strong>Проверьте свою память.</strong> Сейчас появятся 12 слов, по одному. Просто прочитайте их.</figcaption>
+      <div class="drm">
+        <div class="drm__screen" id="drm-screen"><button type="button" class="btn btn--big" id="drm-start">Показать слова</button></div>
+        <fieldset class="choices choices--grid" id="drm-test" hidden>
+          <legend>Отметьте слова, которые были в списке:</legend>
+        </fieldset>
+        <button type="button" class="btn" id="drm-check" hidden>Проверить</button>
+      </div>
+      <div class="demo__out" id="drm-out" aria-live="polite"></div>
+    </figure>
+
+    <h3>Эффект дезинформации</h3>
+    <p>В классическом опыте Элизабет Лофтус и Джона Палмера люди смотрели запись аварии, а затем отвечали на вопрос о скорости. Разница была в одном глаголе [15]:</p>
+    <div class="bars" role="img" aria-label="Средняя оценка скорости: со словом «врезались» около 66 км/ч, со словом «соприкоснулись» около 51 км/ч">
+      <div class="bar"><span class="bar__k">«…когда машины <b>врезались</b>»</span><span class="bar__track"><span class="bar__fill" style="--w:1"></span></span><span class="bar__v"><span data-count="65.6" data-dec="1">65,6</span> км/ч</span></div>
+      <div class="bar"><span class="bar__k">«…когда машины <b>соприкоснулись</b>»</span><span class="bar__track"><span class="bar__fill" style="--w:.78"></span></span><span class="bar__v"><span data-count="51.2" data-dec="1">51,2</span> км/ч</span></div>
+    </div>
+    <p>Через неделю в группе «врезались» <span data-count="32">32</span>% участников «вспомнили» разбитое стекло, которого на записи не было; в группе «ударились» — <span data-count="14">14</span>%. Позже Лофтус и Пикрелл показали, что части людей можно внушить целое детское воспоминание — например, как они потерялись в торговом центре [16]. Предрегистрированная репликация 2023 года подтвердила эффект [18].</p>
+
+    <aside class="fact" data-v="ok">
+      <div class="fact__blot" data-seed="41"></div>
+      <div class="fact__body">
+        <p class="fact__v"></p>
+        <p>Ложные воспоминания и эффект дезинформации — одни из самых воспроизводимых результатов психологии. Но доля людей с «внушённым» воспоминанием сильно зависит от метода и критериев: в обзоре исследований она колеблется примерно от 15 до 30% и выше [19]. Поэтому цифры из отдельных опытов не стоит переносить на всех.</p>
+        <p class="fact__src">Источники: [15]–[19]</p>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<!-- ============ 05 ЭМОЦИИ ============ -->
+<section class="chapter" id="ch-emotions" data-cam="emotions" data-accent="red" data-title="Эмоции" data-num="05">
+  <div class="plaque plaque--wide plaque--right">
+    <p class="kicker">Глава 05 · Эмоции</p>
+    <h2 class="warp">Миндалина — не кнопка страха</h2>
+    <p class="lead">В научпопе часто пишут: «миндалина — центр страха». Это упрощение. Миндалина (парная структура в глубине височных долей) участвует в обнаружении значимого: угроз, но также наград, новизны, выражений лиц. У крыс она ключевая для выработки условной реакции на угрозу [20].</p>
+    <p>Самый известный аргумент против формулы «миндалина = страх» — пациентка S.M. с двусторонним разрушением миндалин. Она почти не проявляла страха перед змеями, пауками и фильмами ужасов [21]. Но когда ей и двум другим таким пациентам дали вдохнуть воздух с повышенным содержанием CO₂, все трое испытали сильную панику [22]. Значит, страх возможен и без миндалины: одни виды угроз обрабатываются через неё, другие — через иные системы, например ствол мозга.</p>
+    <p>Метаанализ исследований нейровизуализации не нашёл однозначного соответствия «одна эмоция — одна область» [29]. Эмоции связаны с распределёнными сетями, в которые входят и&nbsp;кора, и глубинные структуры, и сигналы тела.</p>
+
+    <h3>Как теории объясняют одно и то же состояние</h3>
+    <p>Выберите ситуацию и уровень телесного возбуждения. Ниже — как это прочитали бы разные теории. Они не просто «разные мнения»: у каждой свои данные и свои слабые места.</p>
+    <figure class="demo" id="demo-emo">
+      <div class="controls">
+        <fieldset class="choices choices--row">
+          <legend>Ситуация</legend>
+          <label><input type="radio" name="emo-ctx" value="exam" checked> Перед экзаменом</label>
+          <label><input type="radio" name="emo-ctx" value="date"> Перед свиданием</label>
+          <label><input type="radio" name="emo-ctx" value="street"> Тёмная улица, шаги позади</label>
+        </fieldset>
+        <label class="ctl ctl--wide"><span>Сердцебиение и дыхание: спокойно ↔ сильно учащены</span><input type="range" min="0" max="100" value="70" id="emo-arousal"></label>
+      </div>
+      <div class="theories" id="emo-out" aria-live="polite"></div>
+    </figure>
+
+    <aside class="fact" data-v="ok">
+      <div class="fact__blot" data-seed="51"></div>
+      <div class="fact__body">
+        <p class="fact__v"></p>
+        <p>Люди с двусторонним повреждением миндалин почти не реагируют страхом на внешние угрозы, но способны испытывать панику при вдыхании CO₂. Страх не «хранится» в одной структуре.</p>
+        <p class="fact__src">Источники: [21], [22]</p>
+      </div>
+    </aside>
+    <aside class="fact" data-v="disputed">
+      <div class="fact__blot" data-seed="52"></div>
+      <div class="fact__body">
+        <p class="fact__v"></p>
+        <p>Существуют ли «базовые эмоции» с универсальными выражениями лица, или эмоции конструируются мозгом из телесных ощущений и понятий, — открытый спор. Данные о распознавании эмоций в изолированных культурах трактуют в пользу обеих сторон.</p>
+        <p class="fact__src">Источники: [23], [24], [26], [29]</p>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<!-- ============ 06 ДВЕ СИСТЕМЫ ============ -->
+<section class="chapter" id="ch-systems" data-cam="systems" data-accent="lemon" data-title="Две системы" data-num="06">
+  <div class="plaque plaque--wide">
+    <p class="kicker">Глава 06 · Две системы</p>
+    <h2 class="warp">Быстро и медленно</h2>
+    <p class="lead">Даниэль Канеман популяризировал метафору двух систем: Система 1 работает быстро, автоматически и без усилий; Система 2 — медленно, последовательно и с напряжением [30]. Быстрое мышление опирается на эвристики — правила большого пальца, которые чаще всего экономят силы, но иногда ведут к систематическим ошибкам [33].</p>
+
+    <figure class="demo" id="demo-crt">
+      <figcaption class="demo__cap"><strong>Задача Фредерика.</strong> Отвечайте первым, что придёт в голову.</figcaption>
+      <form class="quiz" id="crt-form">
+        <p class="quiz__q">Бита и мяч вместе стоят 110 рублей. Бита дороже мяча на 100 рублей. Сколько стоит мяч?</p>
+        <label class="ctl"><span>Мяч стоит, ₽</span><input type="number" inputmode="decimal" id="crt-ans" min="0" max="110" step="any" required></label>
+        <button type="submit" class="btn">Ответить</button>
+      </form>
+      <div class="demo__out" id="crt-out" aria-live="polite"></div>
+    </figure>
+
+    <p>«Две системы» — это модель, а не две анатомические части мозга. Сам Канеман называл их удобными персонажами. Исследователи двойственных процессов спорят, сколько тут на самом деле типов обработки и как их разграничить [32]. А часть исследований, на которые опиралась книга «Думай медленно… решай быстро» — особенно глава о социальном прайминге, — позже не воспроизвелась, и Канеман это публично признал.</p>
+
+    <aside class="fact" data-v="ok">
+      <div class="fact__blot" data-seed="61"></div>
+      <div class="fact__body">
+        <p class="fact__v"></p>
+        <p>Интуитивный ответ «10 рублей» очень распространён: в исследовании Фредерика его давала заметная доля студентов даже ведущих университетов. Верный ответ — 5 рублей. Такие задачи измеряют склонность проверять первую мысль.</p>
+        <p class="fact__src">Источник: [31]</p>
+      </div>
+    </aside>
+    <aside class="fact" data-v="disputed">
+      <div class="fact__blot" data-seed="62"></div>
+      <div class="fact__body">
+        <p class="fact__v"></p>
+        <p>Деление на «Систему 1» и «Систему 2» полезно как объяснение, но спорно как научная теория: нет чёткого критерия, где кончается одна и начинается другая.</p>
+        <p class="fact__src">Источники: [30], [32]</p>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<!-- ============ 07 ОШИБКИ МЫШЛЕНИЯ ============ -->
+<section class="chapter" id="ch-biases" data-cam="biases" data-accent="cobalt" data-title="Ошибки мышления" data-num="07">
+  <div class="plaque plaque--wide plaque--right">
+    <p class="kicker">Глава 07 · Ошибки мышления</p>
+    <h2 class="warp">Ловушки, в которые попадают все</h2>
+    <p class="lead">Когнитивные искажения — не глупость, а предсказуемые отклонения, которые возникают у всех. Лучший способ их понять — попасть в одно из них самому.</p>
+
+    <figure class="demo" id="demo-wason">
+      <figcaption class="demo__cap"><strong>Мини-тест: задача 2–4–6.</strong> Я загадал правило, которому подчиняется тройка чисел <b>2, 4, 6</b>. Предлагайте свои тройки — я отвечу, подходят ли они. Когда будете уверены, назовите правило.</figcaption>
+      <form class="wason" id="wason-form">
+        <input type="number" inputmode="decimal" step="any" aria-label="Первое число" required>
+        <input type="number" inputmode="decimal" step="any" aria-label="Второе число" required>
+        <input type="number" inputmode="decimal" step="any" aria-label="Третье число" required>
+        <button type="submit" class="btn">Проверить тройку</button>
+      </form>
+      <ol class="wason__log" id="wason-log" aria-live="polite"></ol>
+      <fieldset class="choices" id="wason-guess" hidden>
+        <legend>Какое правило я загадал?</legend>
+        <label><input type="radio" name="wason-r" value="even2"> Чётные числа, каждое больше предыдущего на 2</label>
+        <label><input type="radio" name="wason-r" value="step"> Числа растут с одинаковым шагом</label>
+        <label><input type="radio" name="wason-r" value="asc"> Любые три числа по возрастанию</label>
+        <label><input type="radio" name="wason-r" value="sum"> Сумма делится на 6</label>
+        <button type="button" class="btn" id="wason-submit">Это моё правило</button>
+      </fieldset>
+      <div class="demo__out" id="wason-out" aria-live="polite"></div>
+    </figure>
+
+    <h3>Якорение</h3>
+    <figure class="demo" id="demo-anchor">
+      <figcaption class="demo__cap">Нажмите кнопку — выпадет случайное число. Затем ответьте на вопрос.</figcaption>
+      <div class="anchor">
+        <button type="button" class="btn" id="anc-spin">Крутить колесо</button>
+        <div class="anchor__num" id="anc-num" aria-live="polite">—</div>
+      </div>
+      <form class="quiz" id="anc-form" hidden>
+        <p class="quiz__q">Какой процент стран — членов ООН находится в Африке? Больше или меньше, чем <b id="anc-n2"></b>%?</p>
+        <fieldset class="choices choices--row"><legend class="sr">Больше или меньше</legend>
+          <label><input type="radio" name="anc-dir" value="more" required> Больше</label>
+          <label><input type="radio" name="anc-dir" value="less"> Меньше</label>
+        </fieldset>
+        <label class="ctl"><span>Ваша оценка, %</span><input type="number" inputmode="numeric" min="0" max="100" id="anc-est" required></label>
+        <button type="submit" class="btn">Ответить</button>
+      </form>
+      <div class="demo__out" id="anc-out" aria-live="polite"></div>
+    </figure>
+
+    <h3>Эффект Даннинга — Крюгера: с оговоркой</h3>
+    <p>В 1999 году Джастин Крюгер и Дэвид Даннинг показали: студенты с худшими результатами тестов сильно переоценивали себя, а лучшие — слегка недооценивали [36]. Эффект стал мемом «дураки уверены в себе». Но есть серьёзная критика: похожая картинка получается даже из <em>случайных</em> чисел — из-за регрессии к среднему и того, что почти все считают себя «выше среднего» [37, 38]. Сдвиньте ползунок до нуля: самооценка никак не связана с умением — а знаменитый график всё равно возникает.</p>
+    <figure class="demo" id="demo-dk">
+      <svg viewBox="0 0 600 320" class="dk" role="img" aria-label="График: реальный и оценённый процентиль по квартилям результата"></svg>
+      <div class="controls">
+        <label class="ctl ctl--wide"><span>Насколько самооценка связана с реальным умением: <b id="dk-r">0</b></span><input type="range" min="0" max="100" value="0" id="dk-rel"></label>
+        <button type="button" class="btn btn--ghost" id="dk-reroll">Новая выборка</button>
+      </div>
+      <p class="legend"><span class="lg lg--solid"></span>реальный процентиль <span class="lg lg--dash"></span>самооценка (процентиль)</p>
+    </figure>
+
+    <aside class="fact" data-v="ok">
+      <div class="fact__blot" data-seed="71"></div>
+      <div class="fact__body">
+        <p class="fact__v"></p>
+        <p>Склонность проверять гипотезы подтверждающими примерами (предвзятость подтверждения) и якорение хорошо воспроизводятся: якорение, например, повторилось в крупном проекте Many Labs.</p>
+        <p class="fact__src">Источники: [33], [34], [35], [40]</p>
+      </div>
+    </aside>
+    <aside class="fact" data-v="disputed">
+      <div class="fact__blot" data-seed="72"></div>
+      <div class="fact__body">
+        <p class="fact__v"></p>
+        <p>Эффект Даннинга — Крюгера во многом объясняется статистическим артефактом. Некоторые исследования, учитывающие это, находят небольшой настоящий эффект: люди с низкими результатами хуже используют обратную связь [39]. Но формула «чем меньше знаешь, тем увереннее» — сильное преувеличение.</p>
+        <p class="fact__src">Источники: [36]–[39]</p>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<!-- ============ 08 СТРЕСС ============ -->
+<section class="chapter" id="ch-stress" data-cam="stress" data-accent="red" data-title="Стресс" data-num="08">
+  <div class="plaque plaque--wide">
+    <p class="kicker">Глава 08 · Стресс</p>
+    <h2 class="warp">Ось стресса</h2>
+    <p class="lead">Когда мозг оценивает ситуацию как угрозу или вызов, включаются две системы. Быстрая — симпатическая нервная система и адреналин: сердце бьётся чаще за секунды. Медленная — ось «гипоталамус — гипофиз — надпочечники» (ГГН): через минуты в кровь выходит кортизол [41].</p>
+    <figure class="demo" id="demo-hpa">
+      <svg viewBox="0 0 600 190" class="hpa" role="img" aria-label="Схема оси гипоталамус — гипофиз — надпочечники с отрицательной обратной связью">
+        <g class="hpa__nodes"></g>
+      </svg>
+      <p class="demo__cap">Кортизол по обратной связи тормозит гипоталамус и гипофиз — так реакция сама себя выключает. При хроническом стрессе эта регуляция нарушается.</p>
+    </figure>
+    <h3>Острый и хронический стресс</h3>
+    <p>Кортизол — не «гормон зла». Он мобилизует энергию, у здоровых людей естественно подскакивает утром после пробуждения и помогает справиться с нагрузкой. Проблемы возникают, когда реакция не выключается: долговременная «аллостатическая нагрузка» связана с нарушениями сна, обмена веществ, иммунитета и настроения [42].</p>
+    <figure class="demo" id="demo-cortisol">
+      <svg viewBox="0 0 600 260" class="cort" role="img" aria-label="Иллюстративная кривая уровня кортизола в течение суток"></svg>
+      <div class="controls">
+        <fieldset class="choices choices--row">
+          <legend>Сценарий</legend>
+          <label><input type="radio" name="cort" value="calm" checked> Обычный день</label>
+          <label><input type="radio" name="cort" value="acute"> Один острый стресс</label>
+          <label><input type="radio" name="cort" value="chronic"> Хронический стресс</label>
+        </fieldset>
+      </div>
+      <p class="note">Схема для объяснения, не измеренные данные: форма кривых у разных людей и в разных исследованиях различается.</p>
+    </figure>
+
+    <aside class="fact" data-v="ok">
+      <div class="fact__blot" data-seed="81"></div>
+      <div class="fact__body">
+        <p class="fact__v"></p>
+        <p>Кратковременная стресс-реакция — адаптивна: мобилизует ресурсы. Длительная активация стресс-систем связана с рисками для здоровья.</p>
+        <p class="fact__src">Источники: [41], [42]</p>
+      </div>
+    </aside>
+    <aside class="fact" data-v="disputed">
+      <div class="fact__blot" data-seed="82"></div>
+      <div class="fact__body">
+        <p class="fact__v"></p>
+        <p>«Хороший стресс» (эустресс, термин Ганса Селье) — полезное понятие, но не измеряемая величина. «Закон Йеркса — Додсона» о перевёрнутой U-кривой — вольное обобщение опыта 1908 года на мышах; как универсальный закон он не доказан. Данные о том, что смена отношения к стрессу меняет саму реакцию, пока неоднородны.</p>
+        <p class="fact__src">Источники: [43], [44], [45], [46]</p>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<!-- ============ 09 ЧТО НЕ ПОДТВЕРДИЛОСЬ ============ -->
+<section class="chapter" id="ch-replication" data-cam="replication" data-accent="lemon" data-title="Что не подтвердилось" data-num="09">
+  <div class="plaque plaque--wide plaque--right">
+    <p class="kicker">Глава 09 · Что не подтвердилось</p>
+    <h2 class="warp">Кризис воспроизводимости</h2>
+    <p class="lead">В 2015 году 270 исследователей попробовали повторить 100 опубликованных психологических экспериментов. Значимый результат удалось получить примерно в трети случаев, а средний размер эффекта оказался вдвое меньше заявленного [47].</p>
+    <div class="stats">
+      <div class="stat"><span class="stat__n" data-count="100">100</span><span class="stat__k">исследований повторили заново</span></div>
+      <div class="stat"><span class="stat__n"><span data-count="97">97</span>%</span><span class="stat__k">оригиналов сообщали о значимом эффекте</span></div>
+      <div class="stat"><span class="stat__n"><span data-count="36">36</span>%</span><span class="stat__k">повторений дали значимый эффект</span></div>
+    </div>
+    <p>Причины известны: маленькие выборки, гибкость в анализе данных («p-hacking»), публикация только «успешных» результатов [86]. Это не значит, что психология «сломана»: она нашла у себя проблему и начала её исправлять — предрегистрацией, открытыми данными, крупными многолабораторными проверками [87].</p>
+
+    <div class="verdicts">
+      <article class="vcard" data-v="refuted">
+        <div class="fact__blot" data-seed="91"></div>
+        <div>
+          <p class="fact__v"></p>
+          <h3>Истощение силы воли</h3>
+          <p>Идея: самоконтроль тратит ограниченный «ресурс», и после одной волевой задачи хуже справляемся со следующей [48]. В 2016 году 23 лаборатории по единому протоколу получили эффект, близкий к нулю [49]. Проверка 2021 года в 36 лабораториях, спланированная в том числе сторонниками теории, — тоже почти ноль [50].</p>
+          <p class="fact__src">Источники: [48], [49], [50]</p>
+        </div>
+      </article>
+      <article class="vcard" data-v="refuted">
+        <div class="fact__blot" data-seed="92"></div>
+        <div>
+          <p class="fact__v"></p>
+          <h3>«Поза силы»</h3>
+          <p>Исследование 2010 года утверждало: две минуты в «позе супергероя» повышают тестостерон, снижают кортизол и увеличивают готовность рисковать [51]. На выборке в 200 человек гормональные эффекты и эффект на риск не повторились [52], а первый автор исходной статьи публично заявила, что больше не верит в эффект [53]. Остаётся спорным лишь небольшое влияние позы на <em>самоощущение</em> [54].</p>
+          <p class="fact__src">Источники: [51]–[54]</p>
+        </div>
+      </article>
+      <article class="vcard" data-v="refuted">
+        <div class="fact__blot" data-seed="93"></div>
+        <div>
+          <p class="fact__v"></p>
+          <h3>Стэнфордский тюремный эксперимент</h3>
+          <p>Эксперимент 1971 года часто подают как доказательство, что «роль» сама делает людей жестокими [55]. Архивные материалы показали: «охранникам» давали указания и ожидали от них жёсткости, часть участников позже говорила, что играла на камеру; эксперимент не был полноценно рецензируемым исследованием с контролем [56]. Похожее исследование BBC 2002 года пришло к другим выводам [57]. Как научное доказательство он несостоятелен.</p>
+          <p class="fact__src">Источники: [55], [56], [57]</p>
+        </div>
+      </article>
+      <article class="vcard" data-v="disputed">
+        <div class="fact__blot" data-seed="94"></div>
+        <div>
+          <p class="fact__v"></p>
+          <h3>Зефирный тест</h3>
+          <p>Дети, дольше ждавшие второй зефир, в среднем лучше учились и во взрослом возрасте [58]. Повторение 2018 года на большей и разнообразной выборке нашло связь примерно вдвое слабее, и она в основном объяснялась семейным достатком и ранними способностями ребёнка [59]. Умение ждать не «предсказывает судьбу».</p>
+          <p class="fact__src">Источники: [58], [59]</p>
+        </div>
+      </article>
+      <article class="vcard" data-v="refuted">
+        <div class="fact__blot" data-seed="95"></div>
+        <div>
+          <p class="fact__v"></p>
+          <h3>Социальный прайминг «медленной походки»</h3>
+          <p>Утверждалось, что после слов, связанных со старостью, люди идут медленнее [124]. Повторение 2012 года с автоматическим замером времени эффекта не нашло — он появлялся, только когда экспериментаторы ожидали его [88].</p>
+          <p class="fact__src">Источники: [88], [124]</p>
+        </div>
+      </article>
+      <article class="vcard" data-v="disputed">
+        <div class="fact__blot" data-seed="96"></div>
+        <div>
+          <p class="fact__v"></p>
+          <h3>Лицевая обратная связь</h3>
+          <p>Классический опыт с ручкой в зубах (улыбка делает мультфильмы смешнее) не повторился в 17 лабораториях [89]. Но крупная проверка 2022 года нашла небольшой эффект от намеренной имитации улыбки [90]. Эффект, видимо, существует, но он маленький.</p>
+          <p class="fact__src">Источники: [89], [90]</p>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 10 ФИНАЛ ============ -->
+<section class="chapter" id="ch-final" data-cam="final" data-accent="cobalt" data-title="Финал" data-num="10">
+  <div class="plaque">
+    <p class="kicker">Глава 10 · Финал</p>
+    <h2 class="warp">Ошибки предсказуемы</h2>
+    <p class="lead">Камера вернулась в глазок — и комната снова «правильная». Даже зная устройство комнаты Эймса, вы продолжаете видеть великана и карлика. Знание не отключает иллюзию. Но оно позволяет не верить ей на слово.</p>
+    <p>Мозг ошибается не случайно, а систематически — и&nbsp;значит, эти ошибки можно научиться замечать. Не устранять навсегда: исследования «обучения против искажений» показывают скромные, но реальные улучшения, особенно когда тренировка даёт обратную связь [60].</p>
+    <ul class="checklist">
+      <li><b>Спросите, откуда вы это знаете.</b> Видели сами, прочитали, догадались?</li>
+      <li><b>Ищите опровержение, а не подтверждение.</b> Какой результат доказал бы, что вы не правы?</li>
+      <li><b>Сначала базовая частота.</b> Как часто это случается вообще, прежде чем думать о частном случае?</li>
+      <li><b>Отделите якорь.</b> Была бы ваша оценка той же без первого названного числа?</li>
+      <li><b>Воспоминание — реконструкция.</b> Уверенность в воспоминании не гарантирует его точности.</li>
+      <li><b>Одно исследование — не факт.</b> Ищите повторения, метаанализы и размер эффекта.</li>
+    </ul>
+    <aside class="fact" data-v="ok">
+      <div class="fact__blot" data-seed="101"></div>
+      <div class="fact__body">
+        <p class="fact__v"></p>
+        <p>Иллюзии восприятия сохраняются, даже когда человек знает их устройство: зрительная система во многом «непроницаема» для знаний. Поэтому надёжнее проверять выводы внешними средствами — линейкой, данными, чужим взглядом.</p>
+        <p class="fact__src">Источники: [3], [4], [60]</p>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<!-- ============ ЗАЛЫ ============ -->
+<div class="halls-intro" id="halls">
+  <div class="plaque plaque--center">
+    <p class="kicker">Приложения</p>
+    <h2 class="warp">Залы кабинета</h2>
+    <p class="lead">Восемь залов для тех, кто хочет глубже: карта мозга, история психологии, карта распространённости тревоги и депрессии, каталог искажений, доказательная терапия, мифы, помощь в кризисе и список источников.</p>
+  </div>
+</div>
+
+<!-- А · КАРТА МОЗГА -->
+<section class="hall" id="hall-brain" data-cam="hall" data-accent="cobalt" data-title="Карта мозга" data-num="А">
+  <div class="plaque plaque--wide">
+    <p class="kicker">Зал А</p>
+    <h2 class="warp">Карта мозга — не френология</h2>
+    <p class="lead">В XIX веке френологи рисовали на черепе «шишку любви» и «шишку честности». Современная нейронаука знает, что у областей мозга есть специализация, но почти любая сложная функция — результат работы распределённых сетей [62, 63]. Одна и та же область участвует во многих процессах, поэтому по активации области нельзя уверенно «прочитать» мысль [61].</p>
+    <div class="brain">
+      <div class="brain__fn" role="group" aria-label="Выберите функцию">
+        <p class="brain__h">Функция:</p>
+        <div class="chips" id="brain-fns"></div>
+      </div>
+      <svg viewBox="0 0 600 440" class="brain__svg" id="brain-svg" role="img" aria-label="Схема мозга, вид сбоку; лоб слева"></svg>
+      <div class="brain__info" id="brain-info" aria-live="polite">
+        <p>Выберите функцию — подсветятся области, которые в ней участвуют. Или нажмите на область на схеме.</p>
+      </div>
+    </div>
+    <p class="note">Схема упрощена: вид левого полушария сбоку, глубинные структуры (пунктир) показаны сквозь кору. Это не анатомический атлас.</p>
+    <aside class="fact" data-v="ok">
+      <div class="fact__blot" data-seed="111"></div>
+      <div class="fact__body">
+        <p class="fact__v"></p>
+        <p>«Центра X» обычно не существует. Даже классическая «зона Брока» участвует не только в речи, а речь требует целой сети областей в обоих полушариях.</p>
+        <p class="fact__src">Источники: [61], [62], [63]</p>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<!-- Б · ХРОНИКА -->
+<section class="hall" id="hall-history" data-cam="hall" data-accent="red" data-title="Хроника психологии" data-num="Б">
+  <div class="plaque plaque--wide plaque--right">
+    <p class="kicker">Зал Б</p>
+    <h2 class="warp">Хроника психологии</h2>
+    <ol class="timeline">
+      <li><span class="tl__y">1860-е</span><div><b>Гельмгольц</b> измеряет скорость нервного импульса и описывает восприятие как «бессознательное умозаключение».</div></li>
+      <li><span class="tl__y">1879</span><div><b>Вильгельм Вундт</b> открывает в Лейпциге первую лабораторию экспериментальной психологии. Эту дату часто считают рождением психологии как науки.</div></li>
+      <li><span class="tl__y">1885</span><div><b>Герман Эббингауз</b> публикует «О памяти»: первые количественные эксперименты с забыванием.</div></li>
+      <li><span class="tl__y">1890</span><div><b>Уильям Джеймс</b> — «Принципы психологии». Функционализм: зачем нужны психические процессы.</div></li>
+      <li><span class="tl__y">1900</span><div><b>Зигмунд Фрейд</b> — «Толкование сновидений». Психоанализ сильно повлиял на культуру и практику, но многие его утверждения трудно проверить экспериментально.</div></li>
+      <li><span class="tl__y">1900–1930-е</span><div><b>Иван Павлов</b> изучает условные рефлексы (Нобелевская премия 1904 года — за работы по пищеварению).</div></li>
+      <li><span class="tl__y">1913</span><div><b>Джон Уотсон</b> провозглашает бихевиоризм: наука должна изучать только наблюдаемое поведение.</div></li>
+      <li><span class="tl__y">1934</span><div><b>Лев Выготский</b> — «Мышление и речь»: развитие психики через культуру и общение.</div></li>
+      <li><span class="tl__y">1938</span><div><b>Б. Ф. Скиннер</b> — «Поведение организмов», оперантное обусловливание.</div></li>
+      <li><span class="tl__y">1956–1959</span><div><b>Когнитивная революция.</b> Статья Джорджа Миллера о «магическом числе семь», первые работы по искусственному интеллекту, критика Скиннера Ноамом Хомским. Психика снова стала предметом науки — как обработка информации.</div></li>
+      <li><span class="tl__y">1960–1970-е</span><div><b>Александр Лурия</b> развивает нейропсихологию: как повреждения мозга меняют психические функции. <b>Аарон Бек</b> и <b>Альберт Эллис</b> создают когнитивную терапию.</div></li>
+      <li><span class="tl__y">1967</span><div><b>Ульрик Найссер</b> — «Когнитивная психология»: название нового направления.</div></li>
+      <li><span class="tl__y">1974</span><div><b>Тверски и Канеман</b> — «Суждения в условиях неопределённости». <b>Лофтус и Палмер</b> — реконструкция памяти.</div></li>
+      <li><span class="tl__y">1990-е</span><div><b>Функциональная МРТ.</b> Появляется возможность смотреть на работу мозга без вмешательства — и вместе с ней соблазн «найти центр всего».</div></li>
+      <li><span class="tl__y">2002</span><div>Канеман получает Нобелевскую премию по экономике.</div></li>
+      <li><span class="tl__y">2011</span><div><b>Год тревоги.</b> Статья Бема о «предвидении будущего» проходит рецензию; вскрываются фальсификации Дидерика Стапела; статья «Ложноположительная психология» показывает, как гибкость анализа создаёт эффекты из шума [86].</div></li>
+      <li><span class="tl__y">2013</span><div>Журнал Cortex вводит формат «зарегистрированных отчётов»: статью принимают до получения результатов.</div></li>
+      <li><span class="tl__y">2015</span><div><b>Проект воспроизводимости</b>: из 100 экспериментов значимо повторились около трети [47].</div></li>
+      <li><span class="tl__y">2016–2021</span><div>Многолабораторные проверки: истощение воли, лицевая обратная связь, Many Labs 2 [49, 50, 89, 91].</div></li>
+      <li><span class="tl__y">Сейчас</span><div><b>Открытая наука:</b> предрегистрация, открытые данные и код, крупные коллаборации. Психология учится доверять не отдельным «сенсациям», а накоплению доказательств [87].</div></li>
+    </ol>
+  </div>
+</section>
+
+<!-- В · КАРТА МИРА -->
+<section class="hall" id="hall-map" data-cam="hall" data-accent="lemon" data-title="Карта мира" data-num="В">
+  <div class="plaque plaque--full">
+    <p class="kicker">Зал В</p>
+    <h2 class="warp">Карта мира: тревога и депрессия</h2>
+    <p class="lead">Оценочная доля населения с тревожными или депрессивными расстройствами, по данным исследования Global Burden of Disease (IHME), выпуск 2017 года [64, 67]. Размер точки — величина показателя. Наведите курсор или коснитесь страны.</p>
+    <div class="map">
+      <div class="map__bar">
+        <div class="seg" role="group" aria-label="Показатель">
+          <button type="button" class="seg__btn" data-metric="a" aria-pressed="true">Тревожные расстройства</button>
+          <button type="button" class="seg__btn" data-metric="d" aria-pressed="false">Депрессивные расстройства</button>
+        </div>
+        <div class="map__world" id="map-world"></div>
+      </div>
+      <div class="map__stage">
+        <canvas class="map__cv" id="map-cv" aria-label="Растровая карта мира"></canvas>
+        <div class="map__tip" id="map-tip" hidden></div>
+      </div>
+      <div class="map__legend" id="map-legend"></div>
+      <details class="map__table">
+        <summary>Таблица: все страны</summary>
+        <div class="tablewrap"><table id="map-table"><thead><tr><th scope="col">Страна</th><th scope="col">Тревожные, %</th><th scope="col">Депрессивные, %</th></tr></thead><tbody></tbody></table></div>
+      </details>
+    </div>
+    <div class="caveats">
+      <h3>Важные оговорки</h3>
+      <ul>
+        <li><b>Это модельные оценки, а не подсчёт диагнозов.</b> Для многих стран исследований мало или нет вовсе, и значения достраиваются статистической моделью по соседним странам и косвенным признакам. Интервалы неопределённости широкие.</li>
+        <li><b>Страны различаются в диагностике.</b> Разные опросники, пороги, культурные нормы разговора о психическом здоровье и стигма влияют на то, что считается расстройством и что люди готовы сообщить [68]. Более высокое значение не обязательно означает «больше страдания» — иногда это лучше выявление.</li>
+        <li><b>Данные на 2017 год.</b> В более новых выпусках (GBD 2019, 2021) оценки пересмотрены, а в 2020 году, по оценкам, распространённость депрессии и тревоги выросла на четверть из-за пандемии [65, 66]. Мы используем открытый выпуск 2017 года как единый срез для всех стран.</li>
+        <li><b>Показатель — доля всего населения</b> (с учётом возрастной структуры по методике GBD), а не доля обратившихся за помощью.</li>
+        <li>Границы упрощены (Natural Earth, крупный растр) и не выражают позиции авторов. Карта не годится для выводов о конкретных людях.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- Г · КАТАЛОГ ИСКАЖЕНИЙ -->
+<section class="hall" id="hall-biases" data-cam="hall" data-accent="cobalt" data-title="Каталог искажений" data-num="Г">
+  <div class="plaque plaque--full">
+    <p class="kicker">Зал Г</p>
+    <h2 class="warp">Каталог когнитивных искажений</h2>
+    <p class="lead">Двадцать девять кляксочек. У каждой — пометка о состоянии доказательств: не все знаменитые «эффекты» пережили проверку.</p>
+    <div class="filter" role="group" aria-label="Фильтр по типу">
+      <button type="button" class="chip" data-filter="all" aria-pressed="true">Все</button>
+      <button type="button" class="chip" data-filter="memory" aria-pressed="false">Память</button>
+      <button type="button" class="chip" data-filter="decisions" aria-pressed="false">Решения</button>
+      <button type="button" class="chip" data-filter="social" aria-pressed="false">Социальные</button>
+    </div>
+    <p class="filter__count" id="bias-count" aria-live="polite"></p>
+    <div class="catalog" id="bias-catalog"></div>
+  </div>
+</section>
+
+<!-- Д · ТЕРАПИЯ -->
+<section class="hall" id="hall-therapy" data-cam="hall" data-accent="red" data-title="Что работает в терапии" data-num="Д">
+  <div class="plaque plaque--wide plaque--right">
+    <p class="kicker">Зал Д</p>
+    <h2 class="warp">Что работает в терапии</h2>
+    <p class="lead">Психотерапия — не одна методика, а семейство подходов. Ниже — те, что лучше всего изучены в рандомизированных исследованиях. Это не рейтинг и не рекомендация: подбирать помощь стоит вместе со специалистом.</p>
+    <div class="therapy">
+      <article><h3>Когнитивно-поведенческая терапия (КПТ)</h3><p>Самый изученный подход: сотни испытаний при депрессии, тревожных расстройствах, бессоннице и др. Эффект при депрессии в среднем умеренный, сопоставим с антидепрессантами, а их сочетание часто работает лучше каждого по отдельности [69, 70].</p></article>
+      <article><h3>Поведенческая активация</h3><p>Часть КПТ, ставшая отдельным методом при депрессии: постепенное возвращение значимых занятий. По эффективности близка к полной КПТ и проще в обучении [75].</p></article>
+      <article><h3>Экспозиционная терапия</h3><p>Постепенная безопасная встреча с тем, чего человек избегает. Хорошо подтверждена при фобиях, обсессивно-компульсивном и посттравматическом стрессовом расстройствах [79].</p></article>
+      <article><h3>Межличностная и краткосрочная психодинамическая терапия</h3><p>Работают с отношениями и повторяющимися паттернами. Для депрессии есть рандомизированные исследования с эффектом, сравнимым с другими методами, хотя их меньше, чем по КПТ [77].</p></article>
+      <article><h3>Диалектическая поведенческая терапия (ДБТ)</h3><p>Разработана для людей с пограничным расстройством личности и самоповреждениями; снижает самоповреждающее поведение [73].</p></article>
+      <article><h3>Терапия принятия и ответственности (ACT)</h3><p>Быстро растущая доказательная база при тревоге, депрессии и хронической боли; качество исследований пока неоднородно [78].</p></article>
+      <article><h3>Когнитивная терапия на основе осознанности (MBCT)</h3><p>Снижает риск повторного эпизода у людей с рекуррентной депрессией [74].</p></article>
+      <article><h3>EMDR</h3><p>Эффективна при ПТСР. При этом, по имеющимся данным, сами движения глаз, вероятно, не главный действующий компонент: важна работа с воспоминанием [79].</p></article>
+      <article><h3>Лекарства</h3><p>Антидепрессанты в среднем эффективнее плацебо при депрессии, хотя разница умеренная и зависит от тяжести [71]. Назначает и отменяет их только врач.</p></article>
+    </div>
+    <h3>Что важно знать</h3>
+    <ul>
+      <li>Разные «добросовестные» методы психотерапии при многих проблемах дают похожие результаты; большую роль играют терапевтический альянс и качество работы конкретного специалиста [72].</li>
+      <li>Не всем помогает первый же метод — это нормально, а не повод разочаровываться в помощи вообще.</li>
+      <li>Есть и подходы, которые могут навредить. Например, обязательный «разбор» (дебрифинг) сразу после травмы не снижает риск ПТСР и в части исследований повышал его [76].</li>
+    </ul>
+  </div>
+</section>
+
+<!-- Е · МИФЫ -->
+<section class="hall" id="hall-myths" data-cam="hall" data-accent="lemon" data-title="Мифы" data-num="Е">
+  <div class="plaque plaque--wide">
+    <p class="kicker">Зал Е</p>
+    <h2 class="warp">Мифы о мозге</h2>
+    <div class="myths">
+      <article class="myth" data-v="refuted">
+        <div class="fact__blot" data-seed="131"></div>
+        <div><p class="fact__v"></p><h3>«Мы используем только 10% мозга»</h3>
+        <p>Нейровизуализация показывает активность во всех областях мозга, хоть и не одновременно на максимуме. Повреждение почти любой области имеет последствия. Мозг — около 2% массы тела и примерно пятая часть энергии покоя: эволюция не содержала бы столь дорогой орган на 90% впустую [80].</p></div>
+      </article>
+      <article class="myth" data-v="refuted">
+        <div class="fact__blot" data-seed="132"></div>
+        <div><p class="fact__v"></p><h3>«Левополушарные» и «правополушарные» люди</h3>
+        <p>Некоторые функции действительно асимметричны: у большинства речь сильнее связана с левым полушарием [84]. Но анализ данных более чем тысячи человек не нашёл людей с «доминирующим» полушарием в целом [81]. Логика и творчество требуют обоих полушарий.</p></div>
+      </article>
+      <article class="myth" data-v="refuted">
+        <div class="fact__blot" data-seed="133"></div>
+        <div><p class="fact__v"></p><h3>«Типы обучения»: визуалы, аудиалы, кинестетики</h3>
+        <p>Люди могут предпочитать разные форматы, но исследования не подтвердили, что обучение «под свой тип» улучшает результаты [82]. Эффективнее подбирать формат под материал: карту — показывать, музыку — слушать.</p></div>
+      </article>
+      <article class="myth" data-v="refuted">
+        <div class="fact__blot" data-seed="134"></div>
+        <div><p class="fact__v"></p><h3>«Эффект Моцарта» делает умнее</h3>
+        <p>Метаанализ почти 40 исследований нашёл слабый кратковременный эффект, не специфичный для Моцарта — скорее это общее возбуждение и хорошее настроение [83].</p></div>
+      </article>
+      <article class="myth" data-v="refuted">
+        <div class="fact__blot" data-seed="135"></div>
+        <div><p class="fact__v"></p><h3>«Память работает как видеокамера»</h3>
+        <p>См. главу «Память»: воспоминания реконструируются и могут меняться под влиянием вопросов и новой информации [14, 15]. Уверенность в воспоминании — плохой показатель его точности.</p></div>
+      </article>
+    </div>
+    <p class="note">Мифы о мозге широко распространены даже среди учителей: в опросах в разных странах большинство соглашалось хотя бы с частью из них [85].</p>
+  </div>
+</section>
+
+<!-- Ж · ПОМОЩЬ -->
+<section class="hall hall--help" id="hall-help" data-cam="hall" data-accent="cobalt" data-title="Куда обращаться" data-num="Ж">
+  <div class="plaque plaque--wide plaque--right plaque--calm">
+    <p class="kicker">Зал Ж</p>
+    <h2>Когда и куда обращаться за помощью</h2>
+    <p class="lead">Этот атлас не ставит диагнозов и не помогает их себе ставить. Если вам тяжело — это достаточная причина поговорить со специалистом. Не нужно сначала «доказать», что всё достаточно серьёзно.</p>
+    <h3>Когда стоит обратиться</h3>
+    <ul>
+      <li>Состояние мешает работать, учиться, общаться или заботиться о себе.</li>
+      <li>Тяжёлое настроение, тревога или безразличие держатся неделями и не проходят.</li>
+      <li>Изменились сон, аппетит, появились мысли, которые пугают.</li>
+      <li>Близкие говорят, что беспокоятся за вас.</li>
+    </ul>
+    <h3>К кому</h3>
+    <ul>
+      <li><b>Психиатр</b> — врач: оценивает состояние, ставит диагноз, может назначить лекарства.</li>
+      <li><b>Психотерапевт</b> — в России это тоже врач с дополнительной подготовкой по психотерапии.</li>
+      <li><b>Клинический (медицинский) психолог</b> — проводит психологическую диагностику и психотерапию, не назначает лекарств.</li>
+      <li>Начать можно и с <b>терапевта в поликлинике</b>: он может направить к нужному специалисту.</li>
+    </ul>
+
+    <div class="crisis" id="crisis">
+      <h3>Если нужна помощь прямо сейчас</h3>
+      <p>Если есть угроза жизни — вашей или чужой — звоните <a href="tel:112" class="phone">112</a>. Вы не обязаны справляться с этим в одиночку.</p>
+      <h4>Россия</h4>
+      <dl class="contacts">
+        <div><dt><a href="tel:112" class="phone">112</a></dt><dd>Единый номер экстренных служб. Бесплатно, с любого телефона.</dd></div>
+        <div><dt><a href="tel:+74959895050" class="phone">+7 495 989-50-50</a></dt><dd>Центр экстренной психологической помощи МЧС России. Круглосуточно, анонимно, консультация бесплатная. Сайт: <a href="https://psi.mchs.gov.ru/" rel="noopener">psi.mchs.gov.ru</a></dd></div>
+        <div><dt><a href="tel:88002000122" class="phone">8 800 2000-122</a></dt><dd>Детский телефон доверия — для детей, подростков и их родителей. Бесплатно и анонимно. С мобильного можно набрать короткий номер <a href="tel:124">124</a>.</dd></div>
+        <div><dt><a href="tel:051" class="phone">051</a> / <a href="tel:+7495051" class="phone">+7 495 051</a></dt><dd>Московская служба психологической помощи населению, круглосуточно: 051 — с городского телефона в Москве, 8 495 051 — с мобильного. Есть онлайн-чат: <a href="https://msph.ru/" rel="noopener">msph.ru</a></dd></div>
+        <div><dt><a href="tel:88007000600" class="phone">8 800 7000-600</a></dt><dd>Всероссийский телефон доверия для женщин, пострадавших от домашнего насилия. Бесплатно.</dd></div>
+      </dl>
+      <h4>Другие страны</h4>
+      <dl class="contacts">
+        <div><dt><a href="https://findahelpline.com/" rel="noopener">findahelpline.com</a></dt><dd>Международный каталог проверенных линий помощи более чем в 175 странах: выберите страну и тему.</dd></div>
+        <div><dt><a href="tel:988" class="phone">988</a></dt><dd>США: 988 Suicide &amp; Crisis Lifeline — звонок или SMS, круглосуточно.</dd></div>
+        <div><dt><a href="tel:116123" class="phone">116 123</a></dt><dd>Великобритания и Ирландия: Samaritans, круглосуточно, бесплатно.</dd></div>
+        <div><dt><a href="tel:112" class="phone">112</a></dt><dd>Единый номер экстренных служб в странах Евросоюза и многих других.</dd></div>
+      </dl>
+      <p class="checked">Контакты проверены 30 сентября 2026 года по официальным сайтам служб. Номера и режим работы могут меняться; если не удалось дозвониться — звоните 112.</p>
+    </div>
+  </div>
+</section>
+
+<!-- З · СЛОВАРЬ И ИСТОЧНИКИ -->
+<section class="hall" id="hall-sources" data-cam="hall" data-accent="red" data-title="Словарь и источники" data-num="З">
+  <div class="plaque plaque--full">
+    <p class="kicker">Зал З</p>
+    <h2 class="warp">Словарь и источники</h2>
+    <h3>Словарь</h3>
+    <dl class="glossary">
+      <div><dt>Аллостатическая нагрузка</dt><dd>«Износ» организма от долгой или частой активации стресс-систем.</dd></div>
+      <div><dt>Воспроизводимость</dt><dd>Получение того же результата в новом независимом исследовании по тому же протоколу.</dd></div>
+      <div><dt>Ось ГГН</dt><dd>Гипоталамус — гипофиз — надпочечники: гормональный каскад стресс-реакции, завершающийся выбросом кортизола.</dd></div>
+      <div><dt>Когнитивное искажение</dt><dd>Систематическое, предсказуемое отклонение суждения от нормы логики или вероятности.</dd></div>
+      <div><dt>Метаанализ</dt><dd>Статистическое объединение результатов многих исследований одного вопроса.</dd></div>
+      <div><dt>Миндалина (амигдала)</dt><dd>Парная структура в глубине височных долей; участвует в оценке значимости стимулов, обучении на угрозах и наградах.</dd></div>
+      <div><dt>Предиктивная обработка</dt><dd>Семейство теорий, согласно которым мозг предсказывает входящие сигналы и обновляет модель мира по ошибкам прогноза.</dd></div>
+      <div><dt>Предрегистрация</dt><dd>Публикация плана исследования и анализа до сбора данных — защита от подгонки результатов.</dd></div>
+      <div><dt>Размер эффекта</dt><dd>Насколько велика разница или связь — в отличие от «значимости», которая говорит лишь, насколько результат неслучаен.</dd></div>
+      <div><dt>Регрессия к среднему</dt><dd>Экстремальные значения при повторном измерении в среднем ближе к среднему — из-за случайной ошибки.</dd></div>
+      <div><dt>Саккада</dt><dd>Быстрый скачок взгляда; происходит несколько раз в секунду.</dd></div>
+      <div><dt>Слепота невнимания</dt><dd>Неспособность заметить заметный, но неожиданный объект, когда внимание занято другим.</dd></div>
+      <div><dt>Эвристика</dt><dd>Упрощённое правило суждения, экономящее усилия.</dd></div>
+      <div><dt>p-hacking</dt><dd>Перебор вариантов анализа до получения «значимого» результата.</dd></div>
+    </dl>
+    <h3>Источники</h3>
+    <p class="note">Номера в квадратных скобках в тексте ссылаются на этот список. Каталог искажений ссылается в основном на источники [92]–[125].</p>
+    <ol class="sources" id="sources">
+      <li id="src-1">Helmholtz, H. von (1867). <i>Handbuch der physiologischen Optik</i>. Leipzig: Voss.</li>
+      <li id="src-2">Clark, A. (2013). Whatever next? Predictive brains, situated agents, and the future of cognitive science. <i>Behavioral and Brain Sciences</i>, 36(3), 181–204.</li>
+      <li id="src-3">Ittelson, W. H. (1952). <i>The Ames Demonstrations in Perception</i>. Princeton University Press.</li>
+      <li id="src-4">Adelson, E. H. (2000). Lightness perception and lightness illusions. In M. Gazzaniga (Ed.), <i>The New Cognitive Neurosciences</i> (2nd ed.). MIT Press.</li>
+      <li id="src-5">Müller-Lyer, F. C. (1889). Optische Urteilstäuschungen. <i>Archiv für Physiologie</i>, Suppl., 263–270.</li>
+      <li id="src-6">Segall, M. H., Campbell, D. T., &amp; Herskovits, M. J. (1966). <i>The Influence of Culture on Visual Perception</i>. Bobbs-Merrill.</li>
+      <li id="src-7">Lafer-Sousa, R., Hermann, K. L., &amp; Conway, B. R. (2015). Striking individual differences in color perception uncovered by ‘the dress’ photograph. <i>Current Biology</i>, 25(13), R545–R546.</li>
+      <li id="src-8">Wallisch, P. (2017). Illumination assumptions account for individual differences in the perceptual interpretation of a profoundly ambiguous stimulus in the color domain: “The dress”. <i>Journal of Vision</i>, 17(4), 5.</li>
+      <li id="src-9">Ramachandran, V. S. (1992). Blind spots. <i>Scientific American</i>, 266(5), 86–91.</li>
+      <li id="src-10">Simons, D. J., &amp; Chabris, C. F. (1999). Gorillas in our midst: Sustained inattentional blindness for dynamic events. <i>Perception</i>, 28(9), 1059–1074.</li>
+      <li id="src-11">Mack, A., &amp; Rock, I. (1998). <i>Inattentional Blindness</i>. MIT Press.</li>
+      <li id="src-12">Most, S. B., Simons, D. J., Scholl, B. J., Jimenez, R., Clifford, E., &amp; Chabris, C. F. (2001). How not to be seen: The contribution of similarity and selective ignoring to sustained inattentional blindness. <i>Psychological Science</i>, 12(1), 9–17.</li>
+      <li id="src-13">Drew, T., Võ, M. L.-H., &amp; Wolfe, J. M. (2013). The invisible gorilla strikes again: Sustained inattentional blindness in expert observers. <i>Psychological Science</i>, 24(9), 1848–1853.</li>
+      <li id="src-14">Bartlett, F. C. (1932). <i>Remembering: A Study in Experimental and Social Psychology</i>. Cambridge University Press.</li>
+      <li id="src-15">Loftus, E. F., &amp; Palmer, J. C. (1974). Reconstruction of automobile destruction: An example of the interaction between language and memory. <i>Journal of Verbal Learning and Verbal Behavior</i>, 13(5), 585–589.</li>
+      <li id="src-16">Loftus, E. F., &amp; Pickrell, J. E. (1995). The formation of false memories. <i>Psychiatric Annals</i>, 25(12), 720–725.</li>
+      <li id="src-17">Roediger, H. L., &amp; McDermott, K. B. (1995). Creating false memories: Remembering words not presented in lists. <i>Journal of Experimental Psychology: Learning, Memory, and Cognition</i>, 21(4), 803–814.</li>
+      <li id="src-18">Murphy, G., Dawson, C. A., Huston, C., et al. (2023). Lost in the mall again: A preregistered replication and extension of Loftus &amp; Pickrell (1995). <i>Memory</i>, 31(6).</li>
+      <li id="src-19">Brewin, C. R., &amp; Andrews, B. (2017). Creating memories for false autobiographical events in childhood: A systematic review. <i>Applied Cognitive Psychology</i>, 31(1), 2–23.</li>
+      <li id="src-20">LeDoux, J. E., &amp; Pine, D. S. (2016). Using neuroscience to help understand fear and anxiety: A two-system framework. <i>American Journal of Psychiatry</i>, 173(11), 1083–1093.</li>
+      <li id="src-21">Feinstein, J. S., Adolphs, R., Damasio, A., &amp; Tranel, D. (2011). The human amygdala and the induction and experience of fear. <i>Current Biology</i>, 21(1), 34–38.</li>
+      <li id="src-22">Feinstein, J. S., Buzza, C., Hurlemann, R., et al. (2013). Fear and panic in humans with bilateral amygdala damage. <i>Nature Neuroscience</i>, 16(3), 270–272.</li>
+      <li id="src-23">Barrett, L. F. (2017). <i>How Emotions Are Made: The Secret Life of the Brain</i>. Houghton Mifflin Harcourt.</li>
+      <li id="src-24">Ekman, P. (1992). An argument for basic emotions. <i>Cognition and Emotion</i>, 6(3–4), 169–200.</li>
+      <li id="src-25">Lazarus, R. S. (1991). <i>Emotion and Adaptation</i>. Oxford University Press.</li>
+      <li id="src-26">Moors, A., Ellsworth, P. C., Scherer, K. R., &amp; Frijda, N. H. (2013). Appraisal theories of emotion: State of the art and future development. <i>Emotion Review</i>, 5(2), 119–124.</li>
+      <li id="src-27">James, W. (1884). What is an emotion? <i>Mind</i>, 9(34), 188–205.</li>
+      <li id="src-28">Schachter, S., &amp; Singer, J. (1962). Cognitive, social, and physiological determinants of emotional state. <i>Psychological Review</i>, 69(5), 379–399.</li>
+      <li id="src-29">Lindquist, K. A., Wager, T. D., Kober, H., Bliss-Moreau, E., &amp; Barrett, L. F. (2012). The brain basis of emotion: A meta-analytic review. <i>Behavioral and Brain Sciences</i>, 35(3), 121–143.</li>
+      <li id="src-30">Kahneman, D. (2011). <i>Thinking, Fast and Slow</i>. Farrar, Straus and Giroux. (Рус. пер.: «Думай медленно… решай быстро».)</li>
+      <li id="src-31">Frederick, S. (2005). Cognitive reflection and decision making. <i>Journal of Economic Perspectives</i>, 19(4), 25–42.</li>
+      <li id="src-32">Evans, J. St. B. T., &amp; Stanovich, K. E. (2013). Dual-process theories of higher cognition: Advancing the debate. <i>Perspectives on Psychological Science</i>, 8(3), 223–241.</li>
+      <li id="src-33">Tversky, A., &amp; Kahneman, D. (1974). Judgment under uncertainty: Heuristics and biases. <i>Science</i>, 185(4157), 1124–1131.</li>
+      <li id="src-34">Wason, P. C. (1960). On the failure to eliminate hypotheses in a conceptual task. <i>Quarterly Journal of Experimental Psychology</i>, 12(3), 129–140.</li>
+      <li id="src-35">Nickerson, R. S. (1998). Confirmation bias: A ubiquitous phenomenon in many guises. <i>Review of General Psychology</i>, 2(2), 175–220.</li>
+      <li id="src-36">Kruger, J., &amp; Dunning, D. (1999). Unskilled and unaware of it. <i>Journal of Personality and Social Psychology</i>, 77(6), 1121–1134.</li>
+      <li id="src-37">Nuhfer, E., Cogan, C., Fleisher, S., Gaze, E., &amp; Wirth, K. (2016). Random number simulations reveal how random noise affects the measurements and graphical portrayals of self-assessed competency. <i>Numeracy</i>, 9(1), 4.</li>
+      <li id="src-38">Gignac, G. E., &amp; Zajenkowski, M. (2020). The Dunning-Kruger effect is (mostly) a statistical artefact. <i>Intelligence</i>, 80, 101449.</li>
+      <li id="src-39">Jansen, R. A., Rafferty, A. N., &amp; Griffiths, T. L. (2021). A rational model of the Dunning–Kruger effect supports insensitivity to evidence in low performers. <i>Nature Human Behaviour</i>, 5, 756–763.</li>
+      <li id="src-40">Klein, R. A., Ratliff, K. A., Vianello, M., et al. (2014). Investigating variation in replicability: A “Many Labs” replication project. <i>Social Psychology</i>, 45(3), 142–152.</li>
+      <li id="src-41">Sapolsky, R. M. (2004). <i>Why Zebras Don’t Get Ulcers</i> (3rd ed.). Henry Holt.</li>
+      <li id="src-42">McEwen, B. S. (1998). Protective and damaging effects of stress mediators. <i>New England Journal of Medicine</i>, 338(3), 171–179.</li>
+      <li id="src-43">Selye, H. (1974). <i>Stress Without Distress</i>. Lippincott.</li>
+      <li id="src-44">Yerkes, R. M., &amp; Dodson, J. D. (1908). The relation of strength of stimulus to rapidity of habit-formation. <i>Journal of Comparative Neurology and Psychology</i>, 18(5), 459–482.</li>
+      <li id="src-45">Teigen, K. H. (1994). Yerkes-Dodson: A law for all seasons. <i>Theory &amp; Psychology</i>, 4(4), 525–547.</li>
+      <li id="src-46">Crum, A. J., Salovey, P., &amp; Achor, S. (2013). Rethinking stress: The role of mindsets in determining the stress response. <i>Journal of Personality and Social Psychology</i>, 104(4), 716–733.</li>
+      <li id="src-47">Open Science Collaboration (2015). Estimating the reproducibility of psychological science. <i>Science</i>, 349(6251), aac4716.</li>
+      <li id="src-48">Baumeister, R. F., Bratslavsky, E., Muraven, M., &amp; Tice, D. M. (1998). Ego depletion: Is the active self a limited resource? <i>Journal of Personality and Social Psychology</i>, 74(5), 1252–1265.</li>
+      <li id="src-49">Hagger, M. S., Chatzisarantis, N. L. D., Alberts, H., et al. (2016). A multilab preregistered replication of the ego-depletion effect. <i>Perspectives on Psychological Science</i>, 11(4), 546–573.</li>
+      <li id="src-50">Vohs, K. D., Schmeichel, B. J., Lohmann, S., et al. (2021). A multisite preregistered paradigmatic test of the ego-depletion effect. <i>Psychological Science</i>, 32(10), 1566–1581.</li>
+      <li id="src-51">Carney, D. R., Cuddy, A. J. C., &amp; Yap, A. J. (2010). Power posing: Brief nonverbal displays affect neuroendocrine levels and risk tolerance. <i>Psychological Science</i>, 21(10), 1363–1368.</li>
+      <li id="src-52">Ranehill, E., Dreber, A., Johannesson, M., et al. (2015). Assessing the robustness of power posing: No effect on hormones and risk tolerance in a large sample of men and women. <i>Psychological Science</i>, 26(5), 653–656.</li>
+      <li id="src-53">Carney, D. R. (2016). <i>My position on “Power Poses”</i>. Заявление, опубликованное на странице автора (UC Berkeley).</li>
+      <li id="src-54">Cuddy, A. J. C., Schultz, S. J., &amp; Fosse, N. E. (2018). P-curving a more comprehensive body of research on postural feedback reveals clear evidential value for power-posing effects. <i>Psychological Science</i>, 29(4), 656–666.</li>
+      <li id="src-55">Haney, C., Banks, W. C., &amp; Zimbardo, P. G. (1973). Interpersonal dynamics in a simulated prison. <i>International Journal of Criminology and Penology</i>, 1, 69–97.</li>
+      <li id="src-56">Le Texier, T. (2019). Debunking the Stanford Prison Experiment. <i>American Psychologist</i>, 74(7), 823–839.</li>
+      <li id="src-57">Reicher, S., &amp; Haslam, S. A. (2006). Rethinking the psychology of tyranny: The BBC prison study. <i>British Journal of Social Psychology</i>, 45(1), 1–40.</li>
+      <li id="src-58">Mischel, W., Shoda, Y., &amp; Rodriguez, M. L. (1989). Delay of gratification in children. <i>Science</i>, 244(4907), 933–938.</li>
+      <li id="src-59">Watts, T. W., Duncan, G. J., &amp; Quan, H. (2018). Revisiting the marshmallow test: A conceptual replication investigating links between early delay of gratification and later outcomes. <i>Psychological Science</i>, 29(7), 1159–1177.</li>
+      <li id="src-60">Morewedge, C. K., Yoon, H., Scopelliti, I., et al. (2015). Debiasing decisions: Improved decision making with a single training intervention. <i>Policy Insights from the Behavioral and Brain Sciences</i>, 2(1), 129–140.</li>
+      <li id="src-61">Poldrack, R. A. (2006). Can cognitive processes be inferred from neuroimaging data? <i>Trends in Cognitive Sciences</i>, 10(2), 59–63.</li>
+      <li id="src-62">Yeo, B. T. T., Krienen, F. M., Sepulcre, J., et al. (2011). The organization of the human cerebral cortex estimated by intrinsic functional connectivity. <i>Journal of Neurophysiology</i>, 106(3), 1125–1165.</li>
+      <li id="src-63">Pessoa, L. (2014). Understanding brain networks and brain organization. <i>Physics of Life Reviews</i>, 11(3), 400–435.</li>
+      <li id="src-64">GBD 2017 Disease and Injury Incidence and Prevalence Collaborators (2018). Global, regional, and national incidence, prevalence, and years lived with disability for 354 diseases and injuries for 195 countries and territories, 1990–2017. <i>The Lancet</i>, 392(10159), 1789–1858.</li>
+      <li id="src-65">GBD 2019 Mental Disorders Collaborators (2022). Global, regional, and national burden of 12 mental disorders in 204 countries and territories, 1990–2019. <i>The Lancet Psychiatry</i>, 9(2), 137–150.</li>
+      <li id="src-66">COVID-19 Mental Disorders Collaborators (2021). Global prevalence and burden of depressive and anxiety disorders in 204 countries and territories in 2020 due to the COVID-19 pandemic. <i>The Lancet</i>, 398(10312), 1700–1712.</li>
+      <li id="src-67">Our World in Data: Dattani, S., Rodés-Guirao, L., Ritchie, H., &amp; Roser, M. <i>Mental Health</i>. ourworldindata.org/mental-health — выгрузка данных IHME GBD 2017 по странам.</li>
+      <li id="src-68">Baxter, A. J., Scott, K. M., Vos, T., &amp; Whiteford, H. A. (2013). Global prevalence of anxiety disorders: A systematic review and meta-regression. <i>Psychological Medicine</i>, 43(5), 897–910.</li>
+      <li id="src-69">Cuijpers, P., Miguel, C., Harrer, M., et al. (2023). Cognitive behavior therapy vs. control conditions, other psychotherapies, pharmacotherapies and combined treatment for depression: A comprehensive meta-analysis including 409 trials with 52,702 patients. <i>World Psychiatry</i>, 22(1), 105–115.</li>
+      <li id="src-70">Hofmann, S. G., Asnaani, A., Vonk, I. J. J., Sawyer, A. T., &amp; Fang, A. (2012). The efficacy of cognitive behavioral therapy: A review of meta-analyses. <i>Cognitive Therapy and Research</i>, 36(5), 427–440.</li>
+      <li id="src-71">Cipriani, A., Furukawa, T. A., Salanti, G., et al. (2018). Comparative efficacy and acceptability of 21 antidepressant drugs for the acute treatment of adults with major depressive disorder. <i>The Lancet</i>, 391(10128), 1357–1366.</li>
+      <li id="src-72">Wampold, B. E., &amp; Imel, Z. E. (2015). <i>The Great Psychotherapy Debate</i> (2nd ed.). Routledge.</li>
+      <li id="src-73">Storebø, O. J., Stoffers-Winterling, J. M., Völlm, B. A., et al. (2020). Psychological therapies for people with borderline personality disorder. <i>Cochrane Database of Systematic Reviews</i>, CD012955.</li>
+      <li id="src-74">Kuyken, W., Warren, F. C., Taylor, R. S., et al. (2016). Efficacy of mindfulness-based cognitive therapy in prevention of depressive relapse: An individual patient data meta-analysis. <i>JAMA Psychiatry</i>, 73(6), 565–574.</li>
+      <li id="src-75">Ekers, D., Webster, L., Van Straten, A., et al. (2014). Behavioural activation for depression; an update of meta-analysis of effectiveness and sub group analysis. <i>PLoS ONE</i>, 9(6), e100100.</li>
+      <li id="src-76">Rose, S., Bisson, J., Churchill, R., &amp; Wessely, S. (2002). Psychological debriefing for preventing post traumatic stress disorder (PTSD). <i>Cochrane Database of Systematic Reviews</i>, CD000560.</li>
+      <li id="src-77">Driessen, E., Hegelmaier, L. M., Abbass, A. A., et al. (2015). The efficacy of short-term psychodynamic psychotherapy for depression: A meta-analysis update. <i>Clinical Psychology Review</i>, 42, 1–15.</li>
+      <li id="src-78">A-Tjak, J. G. L., Davis, M. L., Morina, N., et al. (2015). A meta-analysis of the efficacy of acceptance and commitment therapy for clinically relevant mental and physical health problems. <i>Psychotherapy and Psychosomatics</i>, 84(1), 30–36.</li>
+      <li id="src-79">Cusack, K., Jonas, D. E., Forneris, C. A., et al. (2016). Psychological treatments for adults with posttraumatic stress disorder: A systematic review and meta-analysis. <i>Clinical Psychology Review</i>, 43, 128–141.</li>
+      <li id="src-80">Beyerstein, B. L. (1999). Whence cometh the myth that we only use 10% of our brains? In S. Della Sala (Ed.), <i>Mind Myths</i>. Wiley.</li>
+      <li id="src-81">Nielsen, J. A., Zielinski, B. A., Ferguson, M. A., Lainhart, J. E., &amp; Anderson, J. S. (2013). An evaluation of the left-brain vs. right-brain hypothesis with resting state functional connectivity MRI. <i>PLoS ONE</i>, 8(8), e71275.</li>
+      <li id="src-82">Pashler, H., McDaniel, M., Rohrer, D., &amp; Bjork, R. (2008). Learning styles: Concepts and evidence. <i>Psychological Science in the Public Interest</i>, 9(3), 105–119.</li>
+      <li id="src-83">Pietschnig, J., Voracek, M., &amp; Formann, A. K. (2010). Mozart effect–Shmozart effect: A meta-analysis. <i>Intelligence</i>, 38(3), 314–323.</li>
+      <li id="src-84">Gazzaniga, M. S. (2005). Forty-five years of split-brain research and still going strong. <i>Nature Reviews Neuroscience</i>, 6(8), 653–659.</li>
+      <li id="src-85">Howard-Jones, P. A. (2014). Neuroscience and education: Myths and messages. <i>Nature Reviews Neuroscience</i>, 15(12), 817–824.</li>
+      <li id="src-86">Simmons, J. P., Nelson, L. D., &amp; Simonsohn, U. (2011). False-positive psychology. <i>Psychological Science</i>, 22(11), 1359–1366.</li>
+      <li id="src-87">Nosek, B. A., Hardwicke, T. E., Moshontz, H., et al. (2022). Replicability, robustness, and reproducibility in psychological science. <i>Annual Review of Psychology</i>, 73, 719–748.</li>
+      <li id="src-88">Doyen, S., Klein, O., Pichon, C.-L., &amp; Cleeremans, A. (2012). Behavioral priming: It’s all in the mind, but whose mind? <i>PLoS ONE</i>, 7(1), e29081.</li>
+      <li id="src-89">Wagenmakers, E.-J., Beek, T., Dijkhoff, L., et al. (2016). Registered Replication Report: Strack, Martin, &amp; Stepper (1988). <i>Perspectives on Psychological Science</i>, 11(6), 917–928.</li>
+      <li id="src-90">Coles, N. A., March, D. S., Marmolejo-Ramos, F., et al. (2022). A multi-lab test of the facial feedback hypothesis by the Many Smiles Collaboration. <i>Nature Human Behaviour</i>, 6, 1731–1742.</li>
+      <li id="src-91">Klein, R. A., Vianello, M., Hasselman, F., et al. (2018). Many Labs 2: Investigating variation in replicability across samples and settings. <i>Advances in Methods and Practices in Psychological Science</i>, 1(4), 443–490.</li>
+      <li id="src-92">Fischer, P., Krueger, J. I., Greitemeyer, T., et al. (2011). The bystander-effect: A meta-analytic review. <i>Psychological Bulletin</i>, 137(4), 517–537.</li>
+      <li id="src-93">Philpot, R., Liebst, L. S., Levine, M., Bernasco, W., &amp; Lindegaard, M. R. (2020). Would I be helped? Cross-national CCTV footage shows that intervention is the norm in public conflicts. <i>American Psychologist</i>, 75(1), 66–75.</li>
+      <li id="src-94">Scheibehenne, B., Greifeneder, R., &amp; Todd, P. M. (2010). Can there ever be too many options? A meta-analytic review of choice overload. <i>Journal of Consumer Research</i>, 37(3), 409–425.</li>
+      <li id="src-95">Gal, D., &amp; Rucker, D. D. (2018). The loss of loss aversion: Will it loom larger than its gain? <i>Journal of Consumer Psychology</i>, 28(3), 497–516.</li>
+      <li id="src-96">Flore, P. C., &amp; Wicherts, J. M. (2015). Does stereotype threat influence performance of girls in stereotyped domains? A meta-analysis. <i>Journal of School Psychology</i>, 53(1), 25–44.</li>
+      <li id="src-97">Camerer, C. F., Dreber, A., Holzmeister, F., et al. (2018). Evaluating the replicability of social science experiments in Nature and Science between 2010 and 2015. <i>Nature Human Behaviour</i>, 2, 637–644.</li>
+      <li id="src-98">Tversky, A., &amp; Kahneman, D. (1981). The framing of decisions and the psychology of choice. <i>Science</i>, 211(4481), 453–458.</li>
+      <li id="src-99">Kahneman, D., &amp; Tversky, A. (1979). Prospect theory: An analysis of decision under risk. <i>Econometrica</i>, 47(2), 263–291.</li>
+      <li id="src-100">Fischhoff, B. (1975). Hindsight ≠ foresight: The effect of outcome knowledge on judgment under uncertainty. <i>Journal of Experimental Psychology: Human Perception and Performance</i>, 1(3), 288–299.</li>
+      <li id="src-101">Mitchell, T. R., Thompson, L., Peterson, E., &amp; Cronk, R. (1997). Temporal adjustments in the evaluation of events: The “rosy view”. <i>Journal of Experimental Social Psychology</i>, 33(4), 421–448.</li>
+      <li id="src-102">Kahneman, D., Fredrickson, B. L., Schreiber, C. A., &amp; Redelmeier, D. A. (1993). When more pain is preferred to less: Adding a better end. <i>Psychological Science</i>, 4(6), 401–405.</li>
+      <li id="src-103">Murdock, B. B. (1962). The serial position effect of free recall. <i>Journal of Experimental Psychology</i>, 64(5), 482–488.</li>
+      <li id="src-104">Sparrow, B., Liu, J., &amp; Wegner, D. M. (2011). Google effects on memory: Cognitive consequences of having information at our fingertips. <i>Science</i>, 333(6043), 776–778.</li>
+      <li id="src-105">Tversky, A., &amp; Kahneman, D. (1973). Availability: A heuristic for judging frequency and probability. <i>Cognitive Psychology</i>, 5(2), 207–232.</li>
+      <li id="src-106">Buehler, R., Griffin, D., &amp; Ross, M. (1994). Exploring the “planning fallacy”. <i>Journal of Personality and Social Psychology</i>, 67(3), 366–381.</li>
+      <li id="src-107">Kahneman, D., &amp; Tversky, A. (1973). On the psychology of prediction. <i>Psychological Review</i>, 80(4), 237–251.</li>
+      <li id="src-108">Tversky, A., &amp; Kahneman, D. (1971). Belief in the law of small numbers. <i>Psychological Bulletin</i>, 76(2), 105–110.</li>
+      <li id="src-109">Arkes, H. R., &amp; Blumer, C. (1985). The psychology of sunk cost. <i>Organizational Behavior and Human Decision Processes</i>, 35(1), 124–140.</li>
+      <li id="src-110">Kahneman, D., Knetsch, J. L., &amp; Thaler, R. H. (1990). Experimental tests of the endowment effect and the Coase theorem. <i>Journal of Political Economy</i>, 98(6), 1325–1348.</li>
+      <li id="src-111">Plott, C. R., &amp; Zeiler, K. (2005). The willingness to pay–willingness to accept gap, the “endowment effect,” subject misconceptions, and experimental procedures for eliciting valuations. <i>American Economic Review</i>, 95(3), 530–545.</li>
+      <li id="src-112">Iyengar, S. S., &amp; Lepper, M. R. (2000). When choice is demotivating: Can one desire too much of a good thing? <i>Journal of Personality and Social Psychology</i>, 79(6), 995–1006.</li>
+      <li id="src-113">Ross, L. (1977). The intuitive psychologist and his shortcomings. <i>Advances in Experimental Social Psychology</i>, 10, 173–220.</li>
+      <li id="src-114">Ross, L., Greene, D., &amp; House, P. (1977). The “false consensus effect”. <i>Journal of Experimental Social Psychology</i>, 13(3), 279–301.</li>
+      <li id="src-115">Nisbett, R. E., &amp; Wilson, T. D. (1977). The halo effect: Evidence for unconscious alteration of judgments. <i>Journal of Personality and Social Psychology</i>, 35(4), 250–256.</li>
+      <li id="src-116">Gilovich, T., Savitsky, K., &amp; Medvec, V. H. (1998). The illusion of transparency. <i>Journal of Personality and Social Psychology</i>, 75(2), 332–346.</li>
+      <li id="src-117">Tajfel, H., Billig, M. G., Bundy, R. P., &amp; Flament, C. (1971). Social categorization and intergroup behaviour. <i>European Journal of Social Psychology</i>, 1(2), 149–178.</li>
+      <li id="src-118">Janis, I. L. (1972). <i>Victims of Groupthink</i>. Houghton Mifflin.</li>
+      <li id="src-119">Steele, C. M., &amp; Aronson, J. (1995). Stereotype threat and the intellectual test performance of African Americans. <i>Journal of Personality and Social Psychology</i>, 69(5), 797–811.</li>
+      <li id="src-120">Darley, J. M., &amp; Latané, B. (1968). Bystander intervention in emergencies: Diffusion of responsibility. <i>Journal of Personality and Social Psychology</i>, 8(4), 377–383.</li>
+      <li id="src-121">Masuda, T., &amp; Nisbett, R. E. (2001). Attending holistically versus analytically. <i>Journal of Personality and Social Psychology</i>, 81(5), 922–934.</li>
+      <li id="src-122">Pronin, E., Lin, D. Y., &amp; Ross, L. (2002). The bias blind spot: Perceptions of bias in self versus others. <i>Personality and Social Psychology Bulletin</i>, 28(3), 369–381.</li>
+      <li id="src-123">Kunda, Z. (1990). The case for motivated reasoning. <i>Psychological Bulletin</i>, 108(3), 480–498.</li>
+      <li id="src-124">Bargh, J. A., Chen, M., &amp; Burrows, L. (1996). Automaticity of social behavior: Direct effects of trait construct and stereotype activation on action. <i>Journal of Personality and Social Psychology</i>, 71(2), 230–244.</li>
+      <li id="src-125">Svenson, O. (1981). Are we all less risky and more skillful than our fellow drivers? <i>Acta Psychologica</i>, 47(2), 143–148.</li>
+    </ol>
+  </div>
+</section>
+
+</main>
+
+<footer class="footer">
+  <div class="plaque plaque--center plaque--calm">
+    <p class="disclaimer"><b>Атлас научно-популярный и не заменяет консультацию специалиста.</b> Он не предназначен для диагностики или выбора лечения. Если вам плохо — обратитесь к врачу или в службу помощи (<a href="#crisis">контакты</a>).</p>
+    <p class="small">Данные карты: IHME Global Burden of Disease 2017 через Our World in Data (CC BY). Границы: Natural Earth. 3D: three.js. Шрифты: Unbounded, Onest.</p>
+    <p class="small">Оптическая анимация отключается, если в системе включено «уменьшение движения».</p>
+  </div>
+</footer>
+
+</body>
+</html>
